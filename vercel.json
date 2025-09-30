@@ -1,11 +1,10 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "api/index.py",
-      "use": "@vercel/python"
+  "functions": {
+    "api/index.py": {
+      "maxDuration": 10
     }
-  ],
+  },
   "routes": [
     {
       "src": "/(.*)",
@@ -15,10 +14,5 @@
   "env": {
     "PYTHONPATH": "."
   },
-  "devCommand": "uvicorn app.main:app --reload --host 0.0.0.0 --port $PORT",
-  "functions": {
-    "api/index.py": {
-      "maxDuration": 10
-    }
-  }
+  "devCommand": "uvicorn app.main:app --reload --host 0.0.0.0 --port $PORT"
 }
