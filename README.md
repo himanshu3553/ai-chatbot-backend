@@ -6,18 +6,22 @@ A simple and clean FastAPI backend service that provides RESTful API endpoints.
 
 ```
 ai-backend/
+├── api/
+│   └── index.py             # Vercel entry point
 ├── app/
 │   ├── __init__.py
 │   ├── main.py              # Main FastAPI application
 │   ├── config.py            # Application configuration
 │   ├── logging_config.py    # Logging configuration
 │   └── middleware.py        # Request/response logging middleware
-├── logs/                    # Log files directory
+├── logs/                    # Log files directory (local only)
 │   ├── app.log             # General application logs
 │   └── api_requests.log    # API request/response logs
 ├── tests/                   # Test files (to be added)
 ├── docs/                    # Documentation (to be added)
 ├── requirements.txt         # Python dependencies
+├── runtime.txt              # Python runtime version for Vercel
+├── vercel.json              # Vercel deployment configuration
 ├── .gitignore              # Git ignore file
 └── README.md               # This file
 ```
@@ -30,6 +34,7 @@ ai-backend/
 - **Clean Architecture**: Organized folder structure for scalability
 - **Comprehensive Logging**: Request/response logging with timestamps and structured JSON format
 - **Log Rotation**: Automatic log file rotation to prevent disk space issues
+- **Vercel Ready**: Pre-configured for easy deployment on Vercel serverless platform
 
 ## API Endpoints
 
@@ -106,12 +111,123 @@ curl http://localhost:8000/helloworld
 
 Or visit the interactive documentation at http://localhost:8000/docs to test the endpoints directly in your browser.
 
+## Vercel Deployment
+
+This project is pre-configured for easy deployment on Vercel. Follow these steps:
+
+### Prerequisites
+- Vercel account (free at [vercel.com](https://vercel.com))
+- Git repository (GitHub, GitLab, or Bitbucket)
+
+### Deployment Steps
+
+#### Option 1: Deploy via Vercel CLI (Recommended)
+
+1. **Install Vercel CLI:**
+   ```bash
+   npm i -g vercel
+   ```
+
+2. **Login to Vercel:**
+   ```bash
+   vercel login
+   ```
+
+3. **Deploy from project directory:**
+   ```bash
+   cd /Users/himanshu.singh2/Desktop/LangChain/ai-backend
+   vercel
+   ```
+
+4. **Follow the prompts:**
+   - Link to existing project? `N`
+   - Project name: `ai-backend` (or your preferred name)
+   - Directory: `./` (current directory)
+   - Override settings? `N`
+
+#### Option 2: Deploy via Vercel Dashboard
+
+1. **Push your code to Git:**
+   ```bash
+   git init
+   git add .
+   git commit -m "Initial commit"
+   git remote add origin <your-git-repo-url>
+   git push -u origin main
+   ```
+
+2. **Connect to Vercel:**
+   - Go to [vercel.com/dashboard](https://vercel.com/dashboard)
+   - Click "New Project"
+   - Import your Git repository
+   - Vercel will automatically detect the Python configuration
+
+3. **Configure deployment:**
+   - Framework Preset: `Other`
+   - Root Directory: `./`
+   - Build Command: Leave empty (Vercel handles this automatically)
+   - Output Directory: Leave empty
+
+### Vercel Configuration Files
+
+The project includes these Vercel-specific files:
+
+- **`vercel.json`**: Main configuration file
+- **`api/index.py`**: Entry point for Vercel serverless functions
+- **`runtime.txt`**: Specifies Python 3.11 runtime
+- **`requirements.txt`**: Updated with serverless-compatible dependencies
+
+### Environment Variables
+
+You can set environment variables in the Vercel dashboard:
+
+1. Go to your project dashboard
+2. Navigate to Settings → Environment Variables
+3. Add any required environment variables
+
+### Post-Deployment
+
+After deployment, your API will be available at:
+- **Production URL**: `https://your-project-name.vercel.app`
+- **API Endpoints**:
+  - `https://your-project-name.vercel.app/` - Root endpoint
+  - `https://your-project-name.vercel.app/helloworld` - Hello World endpoint
+  - `https://your-project-name.vercel.app/docs` - Interactive API documentation
+
+### Logging on Vercel
+
+- **Local Development**: Logs are written to files in the `logs/` directory
+- **Vercel Production**: Logs are output to console and visible in Vercel's function logs
+- **Log Format**: Structured JSON format for easy parsing
+
+### Troubleshooting
+
+**Common Issues:**
+
+1. **Import Errors**: Ensure all dependencies are in `requirements.txt`
+2. **Timeout Issues**: Vercel has a 10-second timeout for hobby plans
+3. **Memory Limits**: Vercel hobby plan has 1024MB memory limit
+4. **Cold Starts**: First request may be slower due to serverless cold starts
+
+**Debug Commands:**
+```bash
+# Test locally with Vercel CLI
+vercel dev
+
+# Check deployment logs
+vercel logs
+
+# View function logs in dashboard
+# Go to Functions tab in Vercel dashboard
+```
+
 ## Dependencies
 
 - **FastAPI**: Web framework for building APIs
 - **Uvicorn**: ASGI server for running FastAPI applications
 - **Pydantic**: Data validation using Python type annotations
 - **Python-multipart**: For handling form data
+- **Mangum**: ASGI adapter for AWS Lambda and serverless environments
 
 ## Logging
 

@@ -44,9 +44,8 @@ class CustomFormatter(logging.Formatter):
 def setup_logging() -> None:
     """Setup logging configuration"""
     
-    # Create logs directory if it doesn't exist
-    log_dir = "logs"
-    os.makedirs(log_dir, exist_ok=True)
+    # Check if running in serverless environment (Vercel)
+    is_serverless = os.getenv("VERCEL") == "1" or os.getenv("AWS_LAMBDA_FUNCTION_NAME") is not None
     
     # Configure root logger
     root_logger = logging.getLogger()
@@ -65,38 +64,60 @@ def setup_logging() -> None:
     console_handler.setFormatter(console_formatter)
     root_logger.addHandler(console_handler)
     
-    # File handler for general logs
-    file_handler = logging.handlers.RotatingFileHandler(
-        os.path.join(log_dir, "app.log"),
-        maxBytes=10*1024*1024,  # 10MB
-        backupCount=5
-    )
-    file_handler.setLevel(logging.INFO)
-    file_formatter = CustomFormatter()
-    file_handler.setFormatter(file_formatter)
-    root_logger.addHandler(file_handler)
-    
-    # Separate handler for API request/response logs
-    api_handler = logging.handlers.RotatingFileHandler(
-        os.path.join(log_dir, "api_requests.log"),
-        maxBytes=10*1024*1024,  # 10MB
-        backupCount=5
-    )
-    api_handler.setLevel(logging.INFO)
-    api_formatter = CustomFormatter()
-    api_handler.setFormatter(api_formatter)
-    
-    # Create API logger
-    api_logger = logging.getLogger("api")
-    api_logger.setLevel(logging.INFO)
-    api_logger.addHandler(api_handler)
-    api_logger.propagate = False  # Don't propagate to root logger
-    
-    # Create application logger
-    app_logger = logging.getLogger("app")
-    app_logger.setLevel(logging.INFO)
-    app_logger.addHandler(file_handler)
-    app_logger.propagate = False
+    if not is_serverless:
+        # File handlers only for non-serverless environments
+        # Create logs directory if it doesn't exist
+        log_dir = "logs"
+        os.makedirs(log_dir, exist_ok=True)
+        
+        # File handler for general logs
+        file_handler = logging.handlers.RotatingFileHandler(
+            os.path.join(log_dir, "app.log"),
+            maxBytes=10*1024*1024,  # 10MB
+            backupCount=5
+        )
+        file_handler.setLevel(logging.INFO)
+        file_formatter = CustomFormatter()
+        file_handler.setFormatter(file_formatter)
+        root_logger.addHandler(file_handler)
+        
+        # Separate handler for API request/response logs
+        api_handler = logging.handlers.RotatingFileHandler(
+            os.path.join(log_dir, "api_requests.log"),
+            maxBytes=10*1024*1024,  # 10MB
+            backupCount=5
+        )
+        api_handler.setLevel(logging.INFO)
+        api_formatter = CustomFormatter()
+        api_handler.setFormatter(api_formatter)
+        
+        # Create API logger
+        api_logger = logging.getLogger("api")
+        api_logger.setLevel(logging.INFO)
+        api_logger.addHandler(api_handler)
+        api_logger.propagate = False  # Don't propagate to root logger
+        
+        # Create application logger
+        app_logger = logging.getLogger("app")
+        app_logger.setLevel(logging.INFO)
+        app_logger.addHandler(file_handler)
+        app_logger.propagate = False
+    else:
+        # For serverless environments, use console logging with JSON format
+        console_formatter = CustomFormatter()
+        console_handler.setFormatter(console_formatter)
+        
+        # Create API logger for serverless
+        api_logger = logging.getLogger("api")
+        api_logger.setLevel(logging.INFO)
+        api_logger.addHandler(console_handler)
+        api_logger.propagate = False
+        
+        # Create application logger for serverless
+        app_logger = logging.getLogger("app")
+        app_logger.setLevel(logging.INFO)
+        app_logger.addHandler(console_handler)
+        app_logger.propagate = False
 
 
 def get_logger(name: str) -> logging.Logger:
