@@ -14,5 +14,6 @@
   ],
   "env": {
     "PYTHONPATH": "."
-  }
+  },
+  "devCommand": "uvicorn app.main:app --reload --port $PORT"
 }

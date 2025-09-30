@@ -19,9 +19,11 @@ ai-backend/
 │   └── api_requests.log    # API request/response logs
 ├── tests/                   # Test files (to be added)
 ├── docs/                    # Documentation (to be added)
+├── main.py                  # Root-level entry point for Vercel dev
 ├── requirements.txt         # Python dependencies
 ├── runtime.txt              # Python runtime version for Vercel
 ├── vercel.json              # Vercel deployment configuration
+├── deploy.sh                # Automated deployment script
 ├── .gitignore              # Git ignore file
 └── README.md               # This file
 ```
