@@ -8,13 +8,18 @@ A simple and clean FastAPI backend service that provides RESTful API endpoints.
 ai-backend/
 ├── app/
 │   ├── __init__.py
-│   ├── main.py          # Main FastAPI application
-│   └── config.py        # Application configuration
-├── tests/               # Test files (to be added)
-├── docs/                # Documentation (to be added)
-├── requirements.txt     # Python dependencies
-├── .gitignore          # Git ignore file
-└── README.md           # This file
+│   ├── main.py              # Main FastAPI application
+│   ├── config.py            # Application configuration
+│   ├── logging_config.py    # Logging configuration
+│   └── middleware.py        # Request/response logging middleware
+├── logs/                    # Log files directory
+│   ├── app.log             # General application logs
+│   └── api_requests.log    # API request/response logs
+├── tests/                   # Test files (to be added)
+├── docs/                    # Documentation (to be added)
+├── requirements.txt         # Python dependencies
+├── .gitignore              # Git ignore file
+└── README.md               # This file
 ```
 
 ## Features
@@ -23,6 +28,8 @@ ai-backend/
 - **Automatic Documentation**: Interactive API docs available at `/docs`
 - **Type Hints**: Full type support with Pydantic models
 - **Clean Architecture**: Organized folder structure for scalability
+- **Comprehensive Logging**: Request/response logging with timestamps and structured JSON format
+- **Log Rotation**: Automatic log file rotation to prevent disk space issues
 
 ## API Endpoints
 
@@ -106,12 +113,47 @@ Or visit the interactive documentation at http://localhost:8000/docs to test the
 - **Pydantic**: Data validation using Python type annotations
 - **Python-multipart**: For handling form data
 
+## Logging
+
+The application includes comprehensive logging functionality:
+
+### Log Files
+- **`logs/app.log`**: General application logs with structured JSON format
+- **`logs/api_requests.log`**: Detailed API request/response logs
+
+### Log Features
+- **Structured JSON Format**: All logs are in JSON format for easy parsing
+- **Request Tracking**: Each request gets a unique request ID
+- **Response Time Tracking**: Measures and logs response times
+- **Client Information**: Logs client IP and user agent
+- **Request/Response Bodies**: Captures request and response data
+- **Automatic Rotation**: Log files rotate when they reach 10MB (keeps 5 backups)
+
+### Log Format Example
+```json
+{
+  "timestamp": "2025-09-30T09:55:31.617804Z",
+  "level": "INFO",
+  "logger": "api",
+  "message": "API Request",
+  "request_id": "123e4567-e89b-12d3-a456-426614174000",
+  "method": "GET",
+  "url": "http://localhost:8000/helloworld",
+  "client_ip": "127.0.0.1",
+  "user_agent": "curl/7.68.0",
+  "status_code": 200,
+  "response_time": 0.001234
+}
+```
+
 ## Development
 
 This project follows a clean and minimal structure:
 
 - `app/main.py`: Contains the FastAPI application and route definitions
 - `app/config.py`: Application configuration and utilities
+- `app/logging_config.py`: Logging configuration and utilities
+- `app/middleware.py`: Request/response logging middleware
 - `requirements.txt`: Lists all Python dependencies with versions
 
 ## Future Enhancements

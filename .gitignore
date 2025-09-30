@@ -138,3 +138,10 @@ dmypy.json
 # OS
 .DS_Store
 Thumbs.db
+
+# Log files
+logs/
+*.log
+
+# Log rotation files
+*.log.*
