@@ -135,13 +135,17 @@ This project is pre-configured for easy deployment on Vercel. Follow these steps
    vercel login
    ```
 
-3. **Deploy from project directory:**
+3. **Navigate to project directory:**
    ```bash
    cd /Users/himanshu.singh2/Desktop/LangChain/ai-backend
-   vercel
    ```
 
-4. **Follow the prompts:**
+4. **Deploy:**
+   ```bash
+   vercel --prod
+   ```
+
+5. **Follow the prompts:**
    - Link to existing project? `N`
    - Project name: `ai-backend` (or your preferred name)
    - Directory: `./` (current directory)
@@ -210,6 +214,7 @@ After deployment, your API will be available at:
 2. **Timeout Issues**: Vercel has a 10-second timeout for hobby plans
 3. **Memory Limits**: Vercel hobby plan has 1024MB memory limit
 4. **Cold Starts**: First request may be slower due to serverless cold starts
+5. **404 Errors**: Make sure you're accessing the correct URLs (not `/api/index.py`)
 
 **Debug Commands:**
 ```bash
@@ -221,7 +226,24 @@ vercel logs
 
 # View function logs in dashboard
 # Go to Functions tab in Vercel dashboard
+
+# Test imports locally
+python3 -c "from api.index import handler; print('✅ Import successful')"
 ```
+
+**Local Development:**
+```bash
+# Run FastAPI directly (for testing)
+cd /Users/himanshu.singh2/Desktop/LangChain/ai-backend
+python3 app/main.py
+
+# Then test at: http://localhost:8000/
+```
+
+**Correct API URLs:**
+- Root: `https://your-project.vercel.app/`
+- Hello World: `https://your-project.vercel.app/helloworld`
+- Docs: `https://your-project.vercel.app/docs`
 
 ## Dependencies
 
